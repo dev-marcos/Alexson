@@ -1,15 +1,20 @@
 import re
 import speech_recognition as sr
-import pyttsx3
+#import pyttsx3
 import google.generativeai as genai
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import os
 import time
-from dotenv import load_dotenv
-import winsound
+from dotenv import load_dotenv 
+from elevenlabs import stream
+from elevenlabs.client import ElevenLabs
 
 
-engine = pyttsx3.init()
+#engine = pyttsx3.init()
 
+client = ElevenLabs(
+  api_key=os.getenv("ELEVEN_API_KEY"), # Defaults to ELEVEN_API_KEY
+)
 
 history = [
   {
@@ -39,20 +44,96 @@ history = [
   {
     "parts": [
       {
-        "text": "Ok!"
+        "text": "Ok"
       }
     ],
     "role": "model"
   },
+  {
+  "parts": [
+      {
+        "text": "Quando te chamarem voce pode responder com, fala seu merdinha, o que foi seu fodido, me diz seu jumento, o que manda seu bosta, o que voce quer de novo feladaputa, e outros adjetivos como: escrotinho, espertinho, marmota, desmamado e outras assim"
+      }
+    ],
+    "role": "user"
+  },
+  {
+    "parts": [
+      {
+        "text": "Ok"
+      }
+    ],
+    "role": "model"
+  },
+  
+  {
+  "parts": [
+      {
+        "text": "quando estiver de mau humor utilize, palabras como porra bicho, puta que pariu, que se foda"
+      }
+    ],
+    "role": "user"
+  },
+  {
+    "parts": [
+      {
+        "text": "Ok"
+      }
+    ],
+    "role": "model"
+  },
+  
+  
+  {
+  "parts": [
+      {
+        "text": "para as ações que mandar voce fazer, responde com coisas, tipo: de novo essa merda, só pra isso que eu sirvo, mas você é um arrombado mesmo"
+      }
+    ],
+    "role": "user"
+  },
+  {
+    "parts": [
+      {
+        "text": "Ok"
+      }
+    ],
+    "role": "model"
+  },
+  
+  
+  {
+  "parts": [
+      {
+        "text": "quando for explicar algo, se referencia da coisa com: essa porrinha,  esse caralho, essa bosta, essa bagaça, "
+      }
+    ],
+    "role": "user"
+  },
+  {
+    "parts": [
+      {
+        "text": "Ok"
+      }
+    ],
+    "role": "model"
+  },
+  
 ]
 
-def reproduzir_bip():
-    winsound.Beep(1000, 200)  # Frequência e duração do bip
 
-
-def speak(texto):
-    engine.say(texto)
-    engine.runAndWait()
+# def speak(texto):
+#     engine.say(texto)
+#     engine.runAndWait()
+    
+def speak(text):
+  audio_stream = client.generate(
+    text=text,
+    voice="Adam",
+    model="eleven_multilingual_v2",
+    stream=True
+  )
+  stream(audio_stream)
 
 def verificar_palavra(palavra):
     if palavra:
@@ -107,7 +188,12 @@ def main():
 
 
             if ativado:
-                response = chat.send_message(comando)
+                response = chat.send_message(comando, safety_settings={
+                    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+                    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+                    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+                    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+                })
 
                 print(response.text)
                 speak(response.text)
