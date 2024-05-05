@@ -11,6 +11,12 @@ Alexson é um assistente de voz desenvolvido em Python que realiza comandos de v
 ## Como usar
 
 Para usar Alexson, basta executar o arquivo Python `main.py`. Ele começará a ouvir comandos de voz assim que for ativado pelo nome "Alexson" ou suas variantes. Após reconhecer um comando de voz, Alexson processa o comando, fornece uma resposta e aguarda o próximo comando.
+## Link para API do Gemini e ElevenLabs
+
+[API Google Gemini](https://aistudio.google.com/app/apikey)
+[Eleven Labs](https://elevenlabs.io/app/speech-synthesis)
+
+
 
 ## Dependências
 
